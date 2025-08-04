@@ -8,9 +8,9 @@ ManagHunger is a Bukkit/Spigot plugin designed to manage player hunger levels af
 
 ## Installation
 
-1. 1.Place `ManagHunger.jar` into your server’s `plugins` directory.
-2. 2.Restart the server.
-3. 3.Verify installation with `/managhunger check`.
+1. Place `ManagHunger.jar` into your server’s `plugins` directory.
+2. Restart the server.
+3. Verify installation with `/managhunger check`.
 
 ------
 
