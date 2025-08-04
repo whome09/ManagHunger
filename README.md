@@ -34,10 +34,6 @@ Customizable messages for:
 
 ## Configuration Guide
 
-yaml
-
-复制
-
 ```yaml
 # Edit server/plugins/ManagHunger/config.yml  
 hunger-after-death: 5       # Default hunger value after death (0-20)  
