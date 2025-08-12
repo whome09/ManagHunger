@@ -1,79 +1,100 @@
-# ManagHunger Plugin Wiki
+# 📘 ManagHunger Plugin Wiki
 
-## Introduction
+## 📌 Plugin Overview
 
-ManagHunger is a Bukkit/Spigot plugin designed to manage player hunger levels after death. It supports customizable hunger retention rules and flexible messaging systems.
+*ManagHunger is a highly customizable lightweight plugin designed to precisely control the hunger level of players upon respawning after death.*  
+*Supports per-world and per-permission-group hunger configuration, automatically detects all worlds, simple to configure, and ensures data safety.*
 
-------
+### 📥 Quick Installation
 
-## Installation
+Start the server → Automatically generates `config.yml` on first run  
+Modify the configuration as needed → Run `/managhunger reload`  
+📁 Directory Structure
 
-1. Place `ManagHunger.jar` into your server’s `plugins` directory.
-2. Restart the server.
-3. Verify installation with `/managhunger check`.
-
-------
-
-## Core Features
-
-### 1. Post-Death Hunger Management
-
-- •**Default Behavior**: Reset hunger to `0` after death (configurable).
-- •**Retention Mode**: Retains the player’s pre-death hunger if it was higher than the configured value.
-
-### 2. Messaging System
-
-Customizable messages for:
-
-- •Death notifications
-- •Retention confirmations
-- •Configuration success prompts
-- •Permission error alerts
-
-------
-
-## Configuration Guide
-
-```yaml
-# Edit server/plugins/ManagHunger/config.yml  
-hunger-after-death: 5       # Default hunger value after death (0-20)  
-show-death-message: true    # Enable/disable death messages  
-
-messages:  
-  death-message: "&cYour hunger has been reset to {hunger}"  # Supports color codes & placeholders  
-  retain-message: "&aRetained hunger: {hunger}"  
+```
+plugins/
+└── ManagHunger/
+    ├── config.yml         # Main configuration
+    └── config_backup.yml  # Automatic backup (in case of errors)
 ```
 
-------
+## ⚙️ Configuration Details (config.yml)
 
-## Commands
+### 🌍 World & Permission Group Configuration
 
-|        Command        |      Permission      |            Description             |
-| :-------------------: | :------------------: | :--------------------------------: |
-| `/managhunger reload` | `managhunger.reload` |  Reload the plugin configuration   |
-| `/managhunger set 10` |  `managhunger.set`   | Set post-death hunger value (0-20) |
-| `/managhunger check`  |         None         |       View current settings        |
+#### Whether to send hunger change notifications to players
 
-------
+`show-death-message: true`
 
-## Permissions
+#### Default permission group (used when a player does not belong to any configured group)
 
-|         Node         | Default |       Function       |
-| :------------------: | :-----: | :------------------: |
-|   `managhunger.*`    |   OP    |     Full access      |
-| `managhunger.reload` |   OP    | Reload configuration |
-|  `managhunger.set`   |   OP    | Modify hunger values |
-| `managhunger.bypass` |  False  | Bypass hunger reset  |
+```yaml
+default-group: default
 
-------
+worlds:
+  world:
+    default: 10       # Regular players
+    vip: 15           # VIP players
+    admin: 20         # Administrators
+  world_nether:
+    default: 5        # Lower hunger in the Nether
+  world_the_end:
+    default: 0        # No hunger upon respawning in the End
+```
 
-## FAQs
+#### World Names: Automatically scanned on plugin startup, no manual addition required.
 
-**Q1: Configuration changes aren’t working?**
-A1: Reload the plugin with `/managhunger reload` or restart the server.
+#### Permission Groups: Compatible with LuckPerms, GroupManager, etc., using `group.<group-name>` permission nodes.
 
-**Q2: Color codes aren’t displaying in messages?**
-A2: Ensure valid color codes (e.g., `&cRed`).
+#### Value Range: 0 ~ 20 (0 = empty hunger bar, 20 = full hunger bar).
 
-**Q3: How to retain pre-death hunger?**
-A3: If a player’s hunger before death exceeds the `hunger-after-death` value, it will be retained.
+### 🎨 Custom Messages
+
+```yaml
+messages:
+  plugin-enabled: "&a✓ ManagHunger enabled with world/group support."
+  plugin-disabled: "&c✗ ManagHunger disabled."
+  death-message: "&7[&c💀&7] &eYour hunger has been set to &f{hunger}&e."
+  retain-message: "&7[&c💀&7] &eYour hunger remains: &f{hunger}&e."
+  reload-success: "&a✓ Configuration reloaded!"
+  error-permission: "&c❌ You don't have permission."
+  error-usage-set: "&c❌ Usage: /managhunger set <world> <group> <0-20>"
+  error-number: "&c❌ Invalid number."
+  error-range: "&c❌ Enter a value between 0 and 20."
+  current-settings: "&7📋 Current: World={world}, Group={group}, Hunger={hunger}"
+```
+
+##### *Supports color codes (e.g., &a, &c, &7) and placeholders (e.g., {hunger}, {world}, {group})*
+
+### 🎮 In-Game Commands
+
+| Command                                   | Permission           | Description                                              |
+| ----------------------------------------- | -------------------- | -------------------------------------------------------- |
+| `/managhunger help`                       | Everyone             | View the help menu                                       |
+| `/managhunger check`                      | Everyone             | Display your hunger settings for the current world/group |
+| `/managhunger reload`                     | `managhunger.reload` | Reload configuration (automatically backs up)            |
+| `/managhunger set <world> <group> <0-20>` | `managhunger.set`    | Set hunger value for a specific world and group          |
+
+Example:  
+`/managhunger set world vip 18`  
+Sets the respawn hunger value to 18 for the `vip` group in the `world` world.
+
+### 🔐 Permission Nodes
+
+| Node                 | Default                          | Description               |
+| -------------------- | -------------------------------- | ------------------------- |
+| `managhunger.*`      | OP                               | All permissions           |
+| `managhunger.reload` | OP                               | Reload configuration      |
+| `managhunger.set`    | OP                               | Modify hunger values      |
+| `managhunger.check`  | Everyone                         | View settings             |
+| `group.<group-name>` | Inherited from permission plugin | Determines player's group |
+
+## FAQ
+
+### How to back up the configuration?  
+
+`Each /managhunger reload automatically backs up config.yml to config_backup.yml`
+
+### Configuration not taking effect?  
+
+``Check if /managhunger reload shows a success message; verify world and group names for correct capitalization`
